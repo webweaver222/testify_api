@@ -1,0 +1,10 @@
+{
+    "db" : {
+        "driver" : "postgres",
+        "user" : "postgres", 
+        "password" : "fukir222333",
+        "host" : "localhost",
+        "port" : "5432",
+        "dbName" : "testDB"
+    }
+}
