@@ -2,7 +2,19 @@ const koa = require('koa')
 const router = require('./routes')
 const cors = require('@koa/cors');
 
-require('./db')
+const sequelize = require('./db')
+
+
+sequelize
+  .authenticate()
+  .then(() => {
+    console.log('Connection has been established successfully.');
+  })
+  .catch(err => {
+    console.error('Unable to connect to the database:', err);
+  });
+
+  sequelize.sync()
 
 
 
