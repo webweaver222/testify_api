@@ -5,20 +5,31 @@ const testSave = async (ctx, next) => {
     const {body :  {questions, ...testData}} = ctx.request
   
      ctx.state.questions = questions
-     const testObj = await testService.saveTest(testData)
-
-
-    next()
+    try {
+        const testObj = await testService.saveTest(testData)
+        ctx.state.test = testObj      
+        next()
+       
+    } catch (e) {
+        throw new Error(`Error in the TestController->testSave: ${e}`)
+    }
 }
 
 
 const questionsSave = async (ctx) => {
 
-    const {questions} = ctx.state
-    
-    //await Promise.all(questions.forEach(async (question, i) => await ))
+    const {questions, test} = ctx.state
 
-    ctx.body = 'juo'
+        await Promise.all(questions.map(q => 
+        {   
+            testService.saveQuestion(q)
+            .then(question => question.setTest(test))
+            .catch(err => {
+                throw new Error(`Error in the TestController->questionSave: ${err}`)
+            })
+        }))
+        ctx.body = 'juo'
+
 }
 
 

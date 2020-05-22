@@ -8,7 +8,11 @@ module.exports = {
        
     },
 
-    saveQuestion: async function(question) {
-
+    saveQuestion: async function({body, rightAnswer, answers}) {
+        return Question.create({
+            body: null,
+            rightAnswer: answers.find(a => a.id === rightAnswer).body,
+            answers: answers.map(a => a.body)
+        })
     }
 }
