@@ -1,8 +1,12 @@
 const Router = require('koa-router')
-const {testSave, questionsSave} = require('./controllers/testController')
+const {testSave, questionsSave, resDispatch} = require('./controllers/postTestController')
+const {getTest} = require('./controllers/passTestController')
 const koaBody = require('koa-body')
 const router = new Router()
 
-router.post('/saveTest', koaBody(), testSave, questionsSave)
+
+router.get('/test/:id', getTest)
+
+router.post('/test', koaBody(), testSave, questionsSave, resDispatch)
 
 module.exports = router
