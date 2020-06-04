@@ -43,7 +43,7 @@ const resDispatch = async (ctx) => {
     response.status = 200
 
     response.body = {
-        testUrl: `${request.header.host}/test/${test.id}`
+        testUrl: `${request.header.origin}/test/${test.id}`
     }
 
    

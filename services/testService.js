@@ -7,13 +7,15 @@ module.exports = {
         return Test.findOne({
             where: { id },
         })
-        .then(test => test.getQuestions({ attributes: ['body', 'answers']})
+        .then(test => {
+            if (!test) throw '404'
+            return test.getQuestions({ attributes: ['body', 'answers']})
         .then(questions => {
             return {
                 ...test.get(),
-                questions: questions.map(q=>q.get())
+                questions: questions.map(q => q.get())
             }
-            })
+            })}
         )
     },
 
