@@ -1,5 +1,6 @@
-const Test = require('../models/Test')
+const Test     = require('../models/Test')
 const Question = require('../models/Question')
+const Exam     = require('../models/Exam')
 
 
 module.exports = {
@@ -7,16 +8,12 @@ module.exports = {
         return Test.findOne({
             where: { id },
         })
-        .then(test => {
-            if (!test) throw '404'
-            return test.getQuestions({ attributes: ['body', 'answers']})
-        .then(questions => {
-            return {
-                ...test.get(),
-                questions: questions.map(q => q.get())
-            }
-            })}
-        )
+    },
+
+    getExam: async function (id) {
+        return Exam.findOne({
+            where: { id },
+        })
     },
 
     saveTest: async function ({testName, testDescription}) {
@@ -30,8 +27,16 @@ module.exports = {
     saveQuestion: async function({body, rightAnswer, answers}) {
         return Question.create({
             body: body.trim(),
-            rightAnswer: answers.find(a => a.id === rightAnswer).body.trim(),
+            rightAnswer: answers.findIndex(a => a.id === rightAnswer),
             answers: answers.map(a => a.body.trim())
         })
-    }
+    },
+
+    createExam: async function(name, answers) {
+        return Exam.create({
+            studentName: name,
+            answers
+        })
+    },
+
 }
