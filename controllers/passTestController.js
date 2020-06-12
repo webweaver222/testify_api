@@ -1,5 +1,4 @@
 const testService = require('../services/testService')
-const sleep = require('util').promisify(setTimeout)
 
 var events = require('events');
 var eventEmitter = new events.EventEmitter();
@@ -7,26 +6,16 @@ var eventEmitter = new events.EventEmitter();
 
 const getTest = async (ctx, next) => {
 
-    const { testId, action } = ctx.params
-    
+    const { testId } = ctx.params
+
     try {
         const test = await testService.getTest(testId)
         const questions = await test.getQuestions({ attributes: ['body', 'answers'] })
 
         ctx.state.test = test
+        ctx.state.questions = questions
 
-        if (action === 'start') {
-            return await startTest()
-        }
-
-        if (action === 'startTimer') {
-            return await startTimer()
-        }
-
-        ctx.body = {
-            ...test.get(),
-            questions: questions.map(q => q.get())
-        }
+        return next()
 
     } catch (e) {
         if (e === '404') {
@@ -60,16 +49,36 @@ const startTest = async (ctx, next) => {
 
 }
 
-const startTimer = async (ctx, next) => {
-   /* eventEmitter.on('studentFinish', (params = null) => {
-        console.log(ctx.params.id);
-    });*/
+const timer = async (ctx, next) => {
+    const examId = ctx.params.examId
+    const { test } = ctx.state
 
-   
-    await sleep(ctx.state.test.timeLimit || 5000)
+    const starTtimer = (time) => {
+        
+        return new Promise((resolve, reject) => {
+            const timeout = setTimeout(() => {
+                resolve({
+                    status: 200,
+                    msg: 'Time Out1'
+                })
+            }, (time * 60000) + 1500)
 
-    ctx.status = 200
-    ctx.message = 'Time Out'
+            eventEmitter.on('studentFinish', (params) => {
+                if (examId === params) {
+                    clearTimeout(timeout)
+                    resolve({
+                        status: 200,
+                        msg: 'finished'
+                    })
+                }
+            })
+        })
+    }
+
+    const res = await starTtimer(test.timeLimit)
+
+    ctx.status = res.status 
+    ctx.message = res.msg
 }
 
 
@@ -79,22 +88,31 @@ const finishTest = async (ctx) => {
 
     let exam = await testService.getExam(id)
 
-    exam = await exam.update({ 
-        studentName,
-        answers
-    })
+        exam = await exam.update({
+            studentName,
+            answers
+        })
 
 
     const test = await exam.getTest()
 
-    console.log('updated');
-  
+    ctx.status = 200
+    ctx.message = 'test done'
 
-    //eventEmitter.emit('studentFinish');
+   
+    const stopTimer = eventEmitter.emit('studentFinish', id);
+    if (!stopTimer) {
+        // if timer for whatever reaseon was not started 
+        
+    }
 }
+
+
 
 
 module.exports = {
     getTest,
+    startTest,
+    timer,
     finishTest
 }

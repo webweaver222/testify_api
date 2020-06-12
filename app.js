@@ -47,4 +47,5 @@ app.use(router.allowedMethods())
 
 
   
-  app.listen(3000);
+  const server = app.listen(3000);
+  server.timeout=62*60*1000;

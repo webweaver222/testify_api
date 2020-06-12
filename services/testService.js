@@ -16,10 +16,12 @@ module.exports = {
         })
     },
 
-    saveTest: async function ({testName, testDescription}) {
+    saveTest: async function ({testName, testDescription, publisherEmail, timeLimit}) {
         return Test.create({ 
             testName: testName.trim(), 
-            testDescription: testDescription.trim()
+            testDescription: testDescription.trim(),
+            publisherEmail: publisherEmail.trim(),
+            timeLimit: timeLimit
         })
        
     },

@@ -12,10 +12,18 @@ Test.init({
   },
   testDescription: {
     type: Sequelize.STRING
+  },
+  publisherEmail: {
+    type: Sequelize.STRING
+  },
+  timeLimit: {
+    type: Sequelize.INTEGER
   }
 }, {
   sequelize : connection,
   modelName: 'test'
 });
+
+
 
 module.exports = Test
