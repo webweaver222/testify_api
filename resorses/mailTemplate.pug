@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+html(lang="en")
+    head
+        meta(charset="UTF-8")
+        meta(name="viewport", content="width=device-width, initial-scale=1.0")
+        meta(http-equiv="X-UA-Compatible", content="ie=edge")
+        style
+            include ./mail.css
+        title Testify email template
+    body
+        h1 Test Resault # #{exam_id}
+        h2 - #{test_name} -
+        div.name
+            span Student Name:
+            span #{student_name}
+        div.date
+            span Date of completion:
+            span #{date}
+        div.resault
+            span Resault:
+            span #{resault}
+        button(onclick="document.querySelector('.details').style.display = 'block'") Show details
+        ul.details
+            each val, idx in questions
+                li= idx +1 + '. ' + val
+                    if idx%2==0
+                        div.correct
+                            span= answers[idx]  
+                    else
+                        div.wrong
+                            span.left= answers[idx]  
+                            span.right= rightAnswers[idx]

@@ -1,7 +1,6 @@
 const testService = require('../services/testService')
 
-var events = require('events');
-var eventEmitter = new events.EventEmitter();
+const eventEmitter = require('../eventListeners/emails')
 
 
 const getTest = async (ctx, next) => {
@@ -75,7 +74,7 @@ const timer = async (ctx, next) => {
         })
     }
 
-    const res = await starTtimer(test.timeLimit)
+    const res = await starTtimer(test.timeLimit || 5000)
 
     ctx.status = res.status 
     ctx.message = res.msg
@@ -96,6 +95,8 @@ const finishTest = async (ctx) => {
 
     const test = await exam.getTest()
 
+    
+
     ctx.status = 200
     ctx.message = 'test done'
 
@@ -105,6 +106,8 @@ const finishTest = async (ctx) => {
         // if timer for whatever reaseon was not started 
         
     }
+
+    eventEmitter.emit('sendEmail', [test, exam.get()])
 }
 
 
