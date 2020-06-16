@@ -1,6 +1,7 @@
 const pug = require('pug');
 const  events = require('events');
 const nodemailer = require('nodemailer')
+const {epass} = require('../config/config.json').development
 
 
 const eventEmitter = new events.EventEmitter();
@@ -37,7 +38,7 @@ eventEmitter.on('sendEmail', async ([test, {id: exam_id, studentName, answers, u
         service: 'gmail',
         auth: {
           user: 'fukiry@gmail.com',
-          pass: 'fukir222333'
+          pass: epass
         }
       });
     
