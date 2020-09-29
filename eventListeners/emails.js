@@ -1,15 +1,14 @@
 const pug = require('pug');
-const  events = require('events');
 const nodemailer = require('nodemailer')
 const {epass} = require('../config/config.json').development
+const eventEmitter = require('./eventEmitter')
 
 
-const eventEmitter = new events.EventEmitter();
 
-eventEmitter.on('sendEmail', async ([test, {id: exam_id, studentName, answers, updatedAt}]) => {
+eventEmitter.on('prepareEmail', async ([test, {id: exam_id, studentName, answers, updatedAt}]) => {
 
     const questions = await test.getQuestions({ attributes: ['body', 'rightAnswer' , 'answers'] })
-    const {id : test_id, testName} = test.get()
+    const {testName} = test.get()
 
     let correct = 0
 
@@ -31,32 +30,33 @@ eventEmitter.on('sendEmail', async ([test, {id: exam_id, studentName, answers, u
         resault: `${correct}/${questions.length}`,
         questions: questions.map(q=>q.get().body),
         answers: answers.map((a, i) => questions[i].get().answers[a]),
-        rightAnswers: questions.map((q, i) => q.get().answers[q.get().rightAnswer])
+        rightAnswers: questions.map(q=>q.get().answers[q.get().rightAnswer])
     })
 
-    var transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-          user: 'fukiry@gmail.com',
-          pass: epass
-        }
-      });
-    
-    
-      
-      var mailOptions = {
-        from: 'fukiry@gmail.com',
-        to: 'fukirx@gmail.com',
-        subject: 'Sending Email using Node.js',
-        html: mail
-      };
-      
-      transporter.sendMail(mailOptions).then((err, info) => {
-          console.log(err);
-          console.log(info);
-      })
+    //eventEmitter.emit('sendEmail', [mail])
+})
 
-    
+
+eventEmitter.on('sendEmail', ([mail, adress = 'fukirx@gmail.com']) => {
+  const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: 'fukiry@gmail.com',
+      pass: epass
+    }
+  });
+
+  const mailOptions = {
+    from: 'fukiry@gmail.com',
+    to: adress,
+    subject: 'Sending Email using Node.js',
+    html: mail
+  };
+  
+  transporter.sendMail(mailOptions).then((err, info) => {
+      console.log(err);
+      console.log(info);
+  })
 })
 
 module.exports = eventEmitter

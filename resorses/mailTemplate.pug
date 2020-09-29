@@ -4,29 +4,30 @@ html(lang="en")
         meta(charset="UTF-8")
         meta(name="viewport", content="width=device-width, initial-scale=1.0")
         meta(http-equiv="X-UA-Compatible", content="ie=edge")
-        style
-            include ./mail.css
         title Testify email template
-    body
-        h1 Test Resault # #{exam_id}
-        h2 - #{test_name} -
-        div.name
-            span Student Name:
+    body(style="font-family: cursive;padding: 0 20px; border: 1px solid black;")
+        h1(style="text-align: center;") Test Resault # #{exam_id}
+        h2(style="text-align: center;") - #{test_name} -
+        div.name(style="margin-bottom: 10px;")
+            span(style="margin-right: 5px;font-weight: bold;color: cornflowerblue;") Student Name:
             span #{student_name}
-        div.date
-            span Date of completion:
+        div.date(style="margin-bottom: 10px;")
+            span(style="margin-right: 5px;font-weight: bold;color: cornflowerblue;") Date of completion:
             span #{date}
-        div.resault
-            span Resault:
+        div.resault(style="margin-bottom: 10px;")
+            span(style="margin-right: 5px;font-weight: bold;color: cornflowerblue;") Resault:
             span #{resault}
-        button(onclick="document.querySelector('.details').style.display = 'block'") Show details
-        ul.details
+        div
+            button.show(style="display:inline-block;") Show Details
+        ul.details(style="list-style: none; font-size: 9px")
             each val, idx in questions
-                li= idx +1 + '. ' + val
-                    if idx%2==0
+                li(style="word-break: break-all;")= idx +1 + '. ' + val
+                    if answers[idx]==rightAnswers[idx]
                         div.correct
-                            span= answers[idx]  
+                            span(style="margin-right: 4px;color: cornflowerblue;") Answer:
+                            span(style="color: yellowgreen;")= answers[idx]  
                     else
                         div.wrong
-                            span.left= answers[idx]  
-                            span.right= rightAnswers[idx]
+                            span(style="margin-right: 4px;color: cornflowerblue;") Answer:
+                            span.left(style="color: red;text-decoration: line-through;margin-right: 6px;")= answers[idx]  
+                            span.right(style="color: yellowgreen;")= rightAnswers[idx]
