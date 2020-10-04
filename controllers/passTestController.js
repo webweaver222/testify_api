@@ -1,5 +1,5 @@
 const testService = require("../services/testService");
-
+var schedule = require("node-schedule");
 const eventEmitter = require("../eventListeners/emails");
 
 const getTest = async (ctx, next) => {
@@ -26,12 +26,22 @@ const getTest = async (ctx, next) => {
 };
 
 const startTest = async ctx => {
-  const { test } = ctx.state;
+  const { test, io } = ctx.state;
 
   try {
     const exam = await testService.createExam(null, null);
 
     await exam.setTest(test);
+
+    if (test.timeLimit > 0) {
+      const now = new Date();
+
+      const stopTest = now.setMinutes(now.getMinutes() + 1);
+
+      schedule.scheduleJob(`Timer ${exam.id}`, stopTest, function() {
+        io.sockets.in(exam.id).emit("Test End");
+      });
+    }
 
     ctx.status = 200;
     ctx.body = {
@@ -40,43 +50,6 @@ const startTest = async ctx => {
   } catch (e) {
     throw new Error(`Error in the passTestController->startTest ${e}`);
   }
-};
-
-const timer = async ctx => {
-  const examId = ctx.params.examId;
-  const { test } = ctx.state;
-
-  const starTtimer = time => {
-    if (time === null || time === 0 || time === undefined)
-      return {
-        status: 200,
-        msg: "unlimited test-time"
-      };
-
-    return new Promise((resolve, reject) => {
-      const timeout = setTimeout(() => {
-        resolve({
-          status: 200,
-          msg: "Time Out1"
-        });
-      }, time * 60000 + 1500);
-
-      eventEmitter.on("studentFinish", params => {
-        if (examId === params) {
-          clearTimeout(timeout);
-          resolve({
-            status: 200,
-            msg: "finished"
-          });
-        }
-      });
-    });
-  };
-
-  const res = await starTtimer(test.timeLimit);
-
-  ctx.status = res.status;
-  ctx.message = res.msg;
 };
 
 const finishTest = async ctx => {
@@ -95,17 +68,17 @@ const finishTest = async ctx => {
   ctx.status = 200;
   ctx.message = "test done";
 
-  const stopTimer = eventEmitter.emit("studentFinish", id);
-  if (!stopTimer) {
-    // if timer for whatever reaseon was not started
+  const timer = schedule.scheduledJobs[`Timer ${id}`];
+  if (timer) {
+    timer.cancel();
   }
+  ctx.state.io.sockets.in(id).emit("Test End");
 
-  eventEmitter.emit("prepareEmail", [test, exam.get()]);
+  //eventEmitter.emit("prepareEmail", [test, exam.get()]);
 };
 
 module.exports = {
   getTest,
   startTest,
-  timer,
   finishTest
 };

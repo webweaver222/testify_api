@@ -7,8 +7,7 @@ const {
 const {
   getTest,
   startTest,
-  finishTest,
-  timer
+  finishTest
 } = require("./controllers/passTestController");
 const koaBody = require("koa-body");
 const test_router = new Router({
@@ -24,8 +23,6 @@ test_router.get("/:testId", getTest, ctx => {
 });
 
 test_router.get("/:testId/start", getTest, startTest);
-
-test_router.get("/:testId/startTimer/:examId", getTest, timer);
 
 test_router.post("/:examId/finish", koaBody(), finishTest);
 
