@@ -18,12 +18,30 @@ sequelize.sync();
 
 const app = new koa();
 
+
+const validOrigins = [
+  `http://localhost`,
+  'http://localhost:8080' ];
+  
+  function verifyOrigin ( ctx ) {
+  const origin = ctx.headers.origin;
+  if ( !originIsValid( origin )) return false;
+  return origin;
+}
+
+function originIsValid ( origin ) {
+  return validOrigins.indexOf( origin ) != -1;
+}
+
+const config = {
+  // ...
+  cors: {
+    credentials: true,
+    origin: verifyOrigin }};
+
+
 app.use(
-  cors({
-    //origin: 'http://192.168.1.16:8000',
-    origin: "http://localhost:8000",
-    credentials: true
-  })
+  cors(config.cors )
 );
 
 app.use(async (ctx, next) => {
