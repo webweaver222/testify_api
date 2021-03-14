@@ -2,29 +2,21 @@ const Router = require("koa-router");
 const {
   testSave,
   questionsSave,
-  resDispatch
+  resDispatch,
 } = require("./controllers/postTestController");
-const {
-  getTest,
-  startTest,
-  finishTest
-} = require("./controllers/passTestController");
+const { getTest } = require("./controllers/passTestController");
 const koaBody = require("koa-body");
 const test_router = new Router({
-  prefix: "/test"
+  prefix: "/test",
 });
 
-test_router.get("/:testId", getTest, ctx => {
+test_router.get("/:testId", getTest, (ctx) => {
   ctx.body = {
     ...ctx.state.test.get(),
-    questions: ctx.state.questions.map(q => q.get()),
-    timeLimit: ctx.state.test.timeLimit * 60
+    questions: ctx.state.questions.map((q) => q.get()),
+    timeLimit: ctx.state.test.timeLimit * 60,
   };
 });
-
-test_router.get("/:testId/start", getTest, startTest);
-
-test_router.post("/:examId/finish", koaBody(), finishTest);
 
 test_router.post("/", koaBody(), testSave, questionsSave, resDispatch);
 
