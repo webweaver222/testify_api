@@ -3,6 +3,7 @@ const examService = require("./services/examService");
 module.exports = function (io) {
   io.sockets.on("connection", function (socket) {
     const client = socket.handshake.address;
+
     socket.on("start_exam", async function ({ test_id: id }) {
       console.log(`${client} started ${id}`);
 

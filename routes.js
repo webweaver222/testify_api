@@ -4,6 +4,7 @@ const {
   questionsSave,
   resDispatch,
 } = require("./controllers/postTestController");
+const { getResults } = require("./controllers/resultsController");
 const { getTest } = require("./controllers/passTestController");
 const koaBody = require("koa-body");
 const test_router = new Router({
@@ -17,6 +18,8 @@ test_router.get("/:testId", getTest, (ctx) => {
     timeLimit: ctx.state.test.timeLimit * 60,
   };
 });
+
+test_router.get("/results/:exam_id", getResults);
 
 test_router.post("/", koaBody(), testSave, questionsSave, resDispatch);
 

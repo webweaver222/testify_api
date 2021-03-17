@@ -39,14 +39,12 @@ module.exports = {
 
   finishExam: async function ({ studentName, answers, exam_id }) {
     try {
-      let exam = await this.getExam(exam_id);
+      const exam = await this.getExam(exam_id);
 
-      exam = await exam.update({
+      await exam.update({
         studentName,
         answers,
       });
-
-      const test = await exam.getTest();
 
       const timer = scheduler.scheduledJobs[`Timer ${exam_id}`];
 
