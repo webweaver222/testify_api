@@ -4,9 +4,9 @@ html(lang="en")
         meta(charset="UTF-8")
         meta(name="viewport", content="width=device-width, initial-scale=1.0")
         meta(http-equiv="X-UA-Compatible", content="ie=edge")
-        title Testify email template
-    body(style="font-family: cursive;padding: 0 20px; border: 1px solid black;")
-        h1(style="text-align: center;") Test Resault # #{exam_id}
+        title Testify template
+    body(style="font-family: cursive;padding: 0 20px; ")
+        h1(style="text-align: center;") Test Result # #{exam_id}
         h2(style="text-align: center;") - #{test_name} -
         div.name(style="margin-bottom: 10px;")
             span(style="margin-right: 5px;font-weight: bold;color: cornflowerblue;") Student Name:
@@ -15,11 +15,9 @@ html(lang="en")
             span(style="margin-right: 5px;font-weight: bold;color: cornflowerblue;") Date of completion:
             span #{date}
         div.resault(style="margin-bottom: 10px;")
-            span(style="margin-right: 5px;font-weight: bold;color: cornflowerblue;") Resault:
-            span #{resault}
-        div
-            button.show(style="display:inline-block;") Show Details
-        ul.details(style="list-style: none; font-size: 9px")
+            span(style="margin-right: 5px;font-weight: bold;color: cornflowerblue;") Result:
+            span #{result}
+        ul.details(style="list-style: none; font-size: 13px")
             each val, idx in questions
                 li(style="word-break: break-all;")= idx +1 + '. ' + val
                     if answers[idx]==rightAnswers[idx]
