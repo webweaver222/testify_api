@@ -24,4 +24,12 @@ module.exports = {
       return data;
     };
   },
+
+  verifyOrigin: function (ctx) {
+    return function (validOrigins) {
+      const origin = ctx.headers.origin;
+      if (validOrigins.indexOf(origin) === -1) return false;
+      return origin;
+    };
+  },
 };

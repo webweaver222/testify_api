@@ -5,6 +5,7 @@ const cors = require("@koa/cors");
 var events = require("events");
 
 const sequelize = require("./db");
+const { verifyOrigin } = require("./resorses/utils");
 
 sequelize
   .authenticate()
@@ -21,8 +22,8 @@ const app = new koa();
 
 app.use(
   cors({
-    origin: "http://localhost:8000",
     credentials: true,
+    origin: (ctx) => verifyOrigin(ctx)(["http://localhost:8000"]),
   })
 );
 
