@@ -23,7 +23,7 @@ const app = new koa();
 app.use(
   cors({
     credentials: true,
-    origin: (ctx) => verifyOrigin(ctx)(["http://localhost:8000"]),
+    origin: (ctx) => verifyOrigin(ctx)(["http://localhost"]),
   })
 );
 
@@ -50,7 +50,7 @@ app.use(router.allowedMethods());
 
 const server = http.createServer(app.callback());
 
-server.listen(process.env.PORT || 3000);
+server.listen(process.env.PORT || 3002);
 
 const io = require("socket.io")(server);
 
