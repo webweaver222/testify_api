@@ -35,13 +35,13 @@ const questionsSave = async (ctx, next) => {
 };
 
 const resDispatch = async (ctx) => {
-  const { request, response } = ctx;
+  const { response } = ctx;
   const { test } = ctx.state;
 
   response.status = 200;
 
   response.body = {
-    testUrl: `${request.header.referer}test/${test.id}`,
+    testId: test.id,
   };
 };
 
