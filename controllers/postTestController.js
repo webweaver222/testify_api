@@ -39,7 +39,7 @@ const resDispatch = async (ctx) => {
   const { test } = ctx.state;
 
   response.status = 200;
-
+  cd;
   response.body = {
     testId: test.id,
   };
