@@ -26,7 +26,7 @@ module.exports = {
       if (test.timeLimit > 0) {
         const now = new Date();
 
-        const stopTest = now.setMinutes(now.getMinutes() + 1);
+        const stopTest = now.setMinutes(now.getMinutes() + test.timeLimit);
 
         scheduler.scheduleJob(`Timer ${exam.id}`, stopTest, examTimeout);
       }
