@@ -7,11 +7,19 @@ const getToken = async ({ request, response }) => {
       request.body
     );
 
+    const token = new URLSearchParams(res.data).get("access_token");
+
+    const user = await axios.get("https://api.github.com/user", {
+      headers: { Authorization: `token ${token}` },
+    });
+
     response.status = 200;
     response.body = {
-      token: new URLSearchParams(res.data).get("access_token"),
+      user: user.data,
+      token,
     };
   } catch (e) {
+    console.log("warn");
     response.status = 500;
     response.body = {
       error: e.message,
