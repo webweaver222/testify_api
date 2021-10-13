@@ -6,6 +6,7 @@ const {
 } = require("./controllers/postTestController");
 const { getResults } = require("./controllers/resultsController");
 const { getTest } = require("./controllers/passTestController");
+const { getToken } = require("./controllers/tokenController");
 const koaBody = require("koa-body");
 const test_router = new Router({
   prefix: "/test",
@@ -22,5 +23,7 @@ test_router.get("/:testId", getTest, (ctx) => {
 test_router.get("/results/:exam_id", getResults);
 
 test_router.post("/", koaBody(), testSave, questionsSave, resDispatch);
+
+test_router.post("/token", koaBody(), getToken);
 
 module.exports = test_router;
